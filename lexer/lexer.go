@@ -125,6 +125,12 @@ func classifyToken(input string) Token {
 		return Token{IfKeyword, input}
 	case "else":
 		return Token{ElseKeyword, input}
+	case "fordude":
+		return Token{ForDudeKeyword, input}
+	case "in":
+		return Token{InKeyword, input}
+	case "range":
+		return Token{RangeKeyword, input}
 	}
 
 	if isNumber(input) {

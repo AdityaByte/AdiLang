@@ -10,6 +10,8 @@ const (
 	NodeVariableDeclaration NodeType = "VARIABLE_DECLARATION" // var(name="aditya")
 	NodeIfStatement NodeType = "IF_STATEMENT"
 	NodeBlock NodeType = "BLOCK"
+	NodeForLoop NodeType = "FOR_LOOP"
+	NodeRange NodeType = "RANGE"
 
 	// Expression Node type
 	NodeStringLiteral NodeType = "STRING_LITERAL"

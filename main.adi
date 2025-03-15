@@ -1,0 +1,8 @@
+var(name="aditya pawar")
+var(name="what are you doing")
+var(something="nothing")
+
+fordude i in range(10) {
+    out->name
+    out->something
+}

@@ -1,5 +1,0 @@
-// This is aditya language
-
-var(name="sunita pawar")
-var(name2=name)
-out->name2

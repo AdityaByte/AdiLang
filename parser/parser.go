@@ -52,13 +52,13 @@ func (p *Parser) parseVariableDeclaration() (*ASTNode, error) {
 	}
 
 	if p.currentToken().Type != lexer.RParen {
-		return nil, fmt.Errorf("Expected ')' closing paranthesis" )
+		return nil, fmt.Errorf("Expected ')' closing paranthesis")
 	}
 	p.nextToken()
 
 	return &ASTNode{
-		Type: NodeVariableDeclaration,
-		Value: ident,
+		Type:     NodeVariableDeclaration,
+		Value:    ident,
 		Children: []*ASTNode{expr},
 	}, nil
 }
@@ -94,8 +94,108 @@ func (p *Parser) parsePrintStatement() (*ASTNode, error) {
 // 	}
 // 	p.nextToken()
 
-
 // }
+
+func (p *Parser) parseForLoop() (*ASTNode, error) {
+	if p.currentToken().Type != lexer.ForDudeKeyword {
+		return nil, fmt.Errorf("Expected 'fordude' keyword")
+	}
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.Identifier {
+		return nil, fmt.Errorf("Expected identifier")
+	}
+	loopVar := p.currentToken().Value
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.InKeyword {
+		return nil, fmt.Errorf("Expected 'in' keyword")
+	}
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.RangeKeyword {
+		return nil, fmt.Errorf("Expected 'range' keyword")
+	}
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.LParen {
+		return nil, fmt.Errorf("Expected '(' keyword")
+	}
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.NumberLiteral {
+		return nil, fmt.Errorf("Expected number literal")
+	}
+	limit, err := strconv.Atoi(p.currentToken().Value)
+
+	if err != nil {
+		return nil, fmt.Errorf("invalid number: %s", p.currentToken().Value)
+	}
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.RParen {
+		return nil, fmt.Errorf("Expected ')' keyword")
+	}
+	p.nextToken()
+
+	body, err := p.parseBlock()
+	if err != nil {
+		return nil, err
+	}
+
+	return &ASTNode{
+		Type:  NodeForLoop,
+		Value: loopVar,
+		Children: []*ASTNode{
+			{
+				Type:  NodeRange,
+				Value: limit,
+			},
+			body,
+		},
+	}, nil
+
+}
+
+func (p *Parser) parseBlock() (*ASTNode, error) {
+	if p.currentToken().Type != lexer.LBrace {
+		return nil, fmt.Errorf("Expected 'if' keyword")
+	}
+	p.nextToken()
+
+	var statements []*ASTNode
+
+	for p.currentToken().Type != lexer.RBrace {
+		stmt, err := p.parseStatement()
+		if err != nil {
+			return nil, err
+		}
+		statements = append(statements, stmt)
+	}
+
+	if p.currentToken().Type != lexer.RBrace {
+		return nil, fmt.Errorf("expected'}'")
+	}
+	p.nextToken()
+
+	return &ASTNode{
+		Type:     NodeBlock,
+		Children: statements,
+	}, nil
+}
+
+func (p *Parser) parseStatement() (*ASTNode, error) {
+	switch p.currentToken().Type {
+	case lexer.OutKeyword:
+		return p.parsePrintStatement()
+	case lexer.VarKeyword:
+		return p.parseVariableDeclaration()
+	case lexer.ForDudeKeyword:
+		return p.parseForLoop()
+	default:
+		return nil, fmt.Errorf("unexpected token: %v", p.currentToken())
+	}
+}
 
 func (p *Parser) parseExpression() (*ASTNode, error) {
 	switch p.currentToken().Type {
@@ -156,6 +256,9 @@ func (p *Parser) Parse() []*ASTNode {
 			Nodes = append(Nodes, astNode)
 		case lexer.VarKeyword:
 			astNode, _ := p.parseVariableDeclaration()
+			Nodes = append(Nodes, astNode)
+		case lexer.ForDudeKeyword:
+			astNode, _ := p.parseForLoop()
 			Nodes = append(Nodes, astNode)
 		default:
 			p.nextToken()

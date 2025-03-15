@@ -1,0 +1,5 @@
+// This is aditya language
+
+var(name="aditya pawar")
+var(name2=name)
+out->name2

@@ -13,6 +13,9 @@ const (
 	OutKeyword TokenType = "OUTPUT"
 	IfKeyword TokenType = "IF"
 	ElseKeyword TokenType = "ELSE"
+	ForDudeKeyword TokenType = "FOR_DUDE" // For for loop
+	InKeyword TokenType = "IN"
+	RangeKeyword TokenType = "RANGE"
 
 	// Operators
 	AssignOperator TokenType = "ASSIGN"

@@ -32,9 +32,11 @@ var(greeting = "Hello, AdiLang!")
 
 // Number variable
 var(answer = 42)
+var(newAnswer = answer)
 
-// Print combined values
-out->greeting + " The answer is: " + answer
+// Print variables
+out->greeting
+out->newAnswer // output -> 42
 
 // Control flow
 // Simple for loop

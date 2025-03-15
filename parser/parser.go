@@ -1,0 +1,165 @@
+package parser
+
+import (
+	"fmt"
+	"strconv"
+
+	"github.com/AdityaByte/AdiLang/lexer"
+)
+
+type Parser struct {
+	Tokens []lexer.Token
+	Pos    int
+}
+
+func (p *Parser) currentToken() lexer.Token {
+	if p.Pos < len(p.Tokens) {
+		return p.Tokens[p.Pos]
+	}
+	return lexer.Token{lexer.IllegalToken, ""}
+}
+
+func (p *Parser) nextToken() {
+	p.Pos++
+}
+
+// for parsing the variable declaration.
+func (p *Parser) parseVariableDeclaration() (*ASTNode, error) {
+	if p.currentToken().Type != lexer.VarKeyword {
+		return nil, fmt.Errorf("Expected 'var' keyword")
+	}
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.LParen {
+		return nil, fmt.Errorf("Expected '(' keyword")
+	}
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.Identifier {
+		return nil, fmt.Errorf("Expected 'identifier'")
+	}
+	ident := p.currentToken().Value
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.AssignOperator {
+		return nil, fmt.Errorf("Expected '=' keyword")
+	}
+	p.nextToken()
+
+	expr, err := p.parseExpression()
+	if err != nil {
+		return nil, err
+	}
+
+	if p.currentToken().Type != lexer.RParen {
+		return nil, fmt.Errorf("Expected ')' closing paranthesis" )
+	}
+	p.nextToken()
+
+	return &ASTNode{
+		Type: NodeVariableDeclaration,
+		Value: ident,
+		Children: []*ASTNode{expr},
+	}, nil
+}
+
+// for parsing the print statement.
+func (p *Parser) parsePrintStatement() (*ASTNode, error) {
+	if p.currentToken().Type != lexer.OutKeyword {
+		return nil, fmt.Errorf("Expected 'out' keyword")
+	}
+	p.nextToken()
+
+	if p.currentToken().Type != lexer.PrintOperator {
+		fmt.Println("Expected '->'")
+		return nil, fmt.Errorf("Expected '->' keyword")
+	}
+	p.nextToken()
+
+	expr, err := p.parseExpression()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &ASTNode{
+		Type:  NodePrint,
+		Value: expr,
+	}, nil
+}
+
+// func (p *Parser) parseIfStatement() (*ASTNode, error) {
+// 	if p.currentToken().Type != lexer.IfKeyword {
+// 		return nil, fmt.Errorf("Expected 'if' keyword")
+// 	}
+// 	p.nextToken()
+
+
+// }
+
+func (p *Parser) parseExpression() (*ASTNode, error) {
+	switch p.currentToken().Type {
+	case lexer.StringLiteral:
+		return p.parseStringLiteral()
+	case lexer.NumberLiteral:
+		return p.parseNumberLiteral()
+	case lexer.Identifier:
+		return p.parseIdentifier()
+	default:
+		return nil, fmt.Errorf("Expected Expression (string, number or identifier)")
+	}
+}
+
+func (p *Parser) parseStringLiteral() (*ASTNode, error) {
+	node := &ASTNode{
+		Type:  NodeStringLiteral,
+		Value: p.currentToken().Value,
+	}
+	p.nextToken()
+	return node, nil
+}
+
+func (p *Parser) parseNumberLiteral() (*ASTNode, error) {
+	value, err := strconv.Atoi(p.currentToken().Value)
+	if err != nil {
+		return nil, fmt.Errorf("Invalid number: %s", p.currentToken().Value)
+	}
+
+	node := &ASTNode{
+		Type:  NodeNumberLiteral,
+		Value: value,
+	}
+
+	p.nextToken()
+	return node, nil
+}
+
+func (p *Parser) parseIdentifier() (*ASTNode, error) {
+	node := &ASTNode{
+		Type:  NodeIdentifier,
+		Value: p.currentToken().Value,
+	}
+	p.nextToken()
+	return node, nil
+}
+
+// Main function which parse out the things.
+func (p *Parser) Parse() []*ASTNode {
+	var Nodes []*ASTNode
+
+	for p.Pos < len(p.Tokens) {
+		token := p.currentToken()
+
+		switch token.Type {
+		case lexer.OutKeyword:
+			astNode, _ := p.parsePrintStatement()
+			Nodes = append(Nodes, astNode)
+		case lexer.VarKeyword:
+			astNode, _ := p.parseVariableDeclaration()
+			Nodes = append(Nodes, astNode)
+		default:
+			p.nextToken()
+		}
+	}
+	return Nodes
+}

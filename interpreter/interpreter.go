@@ -8,6 +8,7 @@ import (
 
 func executeStatement(nodes []*parser.ASTNode, env *Environment) error {
 	for _, node := range nodes {
+		// fmt.Println("node type:", node.Type)
 		switch node.Type {
 		case parser.NodeVariableDeclaration:
 			if err := executeVariableDeclaration(node, env); err != nil {

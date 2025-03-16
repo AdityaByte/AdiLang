@@ -88,13 +88,106 @@ func (p *Parser) parsePrintStatement() (*ASTNode, error) {
 	}, nil
 }
 
-// func (p *Parser) parseIfStatement() (*ASTNode, error) {
-// 	if p.currentToken().Type != lexer.IfKeyword {
-// 		return nil, fmt.Errorf("Expected 'if' keyword")
-// 	}
-// 	p.nextToken()
+func (p *Parser) parseIfStatement() (*ASTNode, error) {
+	if p.currentToken().Type != lexer.IfKeyword {
+		return nil, fmt.Errorf("Expected if keyword")
+	}
+	p.nextToken()
 
-// }
+	cond, err := p.parseCondition()
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := p.parseBlock()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &ASTNode{
+		Type: NodeIfStatement,
+		Children: []*ASTNode{
+			cond,
+			body,
+		},
+	}, nil
+}
+
+func (p *Parser) parseCondition() (*ASTNode, error) {
+	left, err := p.parsePrimary();
+
+	if err != nil{
+		return nil, err
+	}
+
+	// fmt.Println("left value : ", left.Value)
+
+	operator, err := p.parseOperator()
+	if err != nil {
+		return nil, err
+	}
+	operatorValue := operator.Value
+
+	// fmt.Println("Operator Value:", operatorValue)
+
+	right, err := p.parsePrimary()
+
+	// fmt.Println("Right Value :", right.Value)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &ASTNode{
+		Type: NodeCondition,
+		Value: operatorValue,
+		Children: []*ASTNode{
+			left, 
+			right,
+		},
+	}, nil
+}
+
+func (p *Parser) parseOperator() (*ASTNode, error) {
+	switch p.currentToken().Type {
+	case lexer.ComparisionOperator:
+		node := &ASTNode{
+			Type: NodeComparision,
+			Value: p.currentToken().Value,
+		}
+		p.nextToken()
+		return node, nil
+	case lexer.GreaterThanOperator:
+		node := &ASTNode{
+			Type: NodeGreaterThan,
+			Value: p.currentToken().Value,
+		}
+		p.nextToken()
+		return node, nil
+	case lexer.LessThanOperator:
+		node := &ASTNode{
+			Type: NodeLessThan,
+			Value: p.currentToken().Value,
+		}
+		p.nextToken()
+		return node, nil
+	default:
+		return nil, fmt.Errorf("Expected these '==, >, <'")
+	}
+}
+
+func (p *Parser) parsePrimary() (*ASTNode, error) {
+	switch p.currentToken().Type {
+	case lexer.NumberLiteral:
+		return p.parseNumberLiteral()
+	case lexer.Identifier:
+		return p.parseIdentifier()
+	default:
+		return nil, fmt.Errorf("Expected number, identifier")
+	}
+}
+
 
 func (p *Parser) parseForLoop() (*ASTNode, error) {
 	if p.currentToken().Type != lexer.ForDudeKeyword {
@@ -158,6 +251,7 @@ func (p *Parser) parseForLoop() (*ASTNode, error) {
 }
 
 func (p *Parser) parseBlock() (*ASTNode, error) {
+	fmt.Println("current token in block:", p.currentToken().Value)
 	if p.currentToken().Type != lexer.LBrace {
 		return nil, fmt.Errorf("Expected 'if' keyword")
 	}
@@ -192,6 +286,8 @@ func (p *Parser) parseStatement() (*ASTNode, error) {
 		return p.parseVariableDeclaration()
 	case lexer.ForDudeKeyword:
 		return p.parseForLoop()
+	case lexer.IfKeyword:
+		return p.parseIfStatement()
 	default:
 		return nil, fmt.Errorf("unexpected token: %v", p.currentToken())
 	}
@@ -259,6 +355,9 @@ func (p *Parser) Parse() []*ASTNode {
 			Nodes = append(Nodes, astNode)
 		case lexer.ForDudeKeyword:
 			astNode, _ := p.parseForLoop()
+			Nodes = append(Nodes, astNode)
+		case lexer.IfKeyword:
+			astNode, _ := p.parseIfStatement()
 			Nodes = append(Nodes, astNode)
 		default:
 			p.nextToken()

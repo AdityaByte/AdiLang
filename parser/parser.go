@@ -81,6 +81,23 @@ func (p *Parser) parsePrintStatement() (*ASTNode, error) {
 	if err != nil {
 		return nil, err
 	}
+	
+	fmt.Println(p.currentToken().Type, p.currentToken().Value)
+	if p.currentToken().Type == lexer.PlusOperator {
+		p.nextToken()
+		anotherExpr, err := p.parseExpression()
+		if err != nil {
+			return nil, err
+		}
+
+		return &ASTNode{
+			Type: NodePrint,
+			Value: expr,
+			Children: []*ASTNode{
+				anotherExpr, // Children at zero index
+			},
+		}, nil
+	}
 
 	return &ASTNode{
 		Type:  NodePrint,
@@ -115,9 +132,9 @@ func (p *Parser) parseIfStatement() (*ASTNode, error) {
 }
 
 func (p *Parser) parseCondition() (*ASTNode, error) {
-	left, err := p.parsePrimary();
+	left, err := p.parsePrimary()
 
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 
@@ -140,10 +157,10 @@ func (p *Parser) parseCondition() (*ASTNode, error) {
 	}
 
 	return &ASTNode{
-		Type: NodeCondition,
+		Type:  NodeCondition,
 		Value: operatorValue,
 		Children: []*ASTNode{
-			left, 
+			left,
 			right,
 		},
 	}, nil
@@ -153,21 +170,21 @@ func (p *Parser) parseOperator() (*ASTNode, error) {
 	switch p.currentToken().Type {
 	case lexer.ComparisionOperator:
 		node := &ASTNode{
-			Type: NodeComparision,
+			Type:  NodeComparision,
 			Value: p.currentToken().Value,
 		}
 		p.nextToken()
 		return node, nil
 	case lexer.GreaterThanOperator:
 		node := &ASTNode{
-			Type: NodeGreaterThan,
+			Type:  NodeGreaterThan,
 			Value: p.currentToken().Value,
 		}
 		p.nextToken()
 		return node, nil
 	case lexer.LessThanOperator:
 		node := &ASTNode{
-			Type: NodeLessThan,
+			Type:  NodeLessThan,
 			Value: p.currentToken().Value,
 		}
 		p.nextToken()
@@ -187,7 +204,6 @@ func (p *Parser) parsePrimary() (*ASTNode, error) {
 		return nil, fmt.Errorf("Expected number, identifier")
 	}
 }
-
 
 func (p *Parser) parseForLoop() (*ASTNode, error) {
 	if p.currentToken().Type != lexer.ForDudeKeyword {

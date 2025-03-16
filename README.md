@@ -18,6 +18,8 @@ A minimalist toy programming language built with ❤️ in Go. Modern syntax mee
 | **💬 Comments**            | `// Single-line`<br>`% Multi-line %`        |
 | **🖨️ Print Statements**   | `out->"Hello World!"`                       |
 | **🌀 Loops**               | `fordude i in range(5) { ... }`             |
+| **🤔 conditional**               | `ifdude condition { ... }`             |
+| **🎈 Block Level Design**               | `ifdude condition { ... }`             |
 
 </div>
 

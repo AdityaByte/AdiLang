@@ -31,14 +31,14 @@ func printAST(nodes []*parser.ASTNode, indent string) {
 
 func main() {
 
-	// if len(os.Args) < 2 {
-	// 	fmt.Println("Usage adilang <filename>.adi")
-	// 	return
-	// }
+	if len(os.Args) < 2 {
+		fmt.Println("Usage adilang <filename>.adi")
+		return
+	}
 
-	// filename := os.Args[1]
+	filename := os.Args[1]
 
-	code, err := os.ReadFile("test.adi")
+	code, err := os.ReadFile(filename)
 
 	if err != nil {
 		fmt.Println("Error occured", err)
@@ -49,7 +49,7 @@ func main() {
 
 	tokens := lexer.Lexer(sourceCode)
 
-	printToken(tokens)
+	// printToken(tokens)
 
 	parser := parser.Parser{Tokens: tokens, Pos: 0}
 
@@ -59,12 +59,12 @@ func main() {
 	// 	fmt.Println("%v", astNode)
 	// }
 
-	printAST(astNodes, "")
+	// printAST(astNodes, "")
 
-	fmt.Println("**********************************")
+	// fmt.Println("**********************************")
 
 	// Creating a new Environment
-	env := interpreter.NewEnvironment()
+	env := interpreter.NewEnvironment(nil)
 
 	if err := interpreter.Interpret(astNodes, env); err != nil {
 		fmt.Println("Error:", err)

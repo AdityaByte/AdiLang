@@ -251,7 +251,7 @@ func (p *Parser) parseForLoop() (*ASTNode, error) {
 }
 
 func (p *Parser) parseBlock() (*ASTNode, error) {
-	fmt.Println("current token in block:", p.currentToken().Value)
+	// fmt.Println("current token in block:", p.currentToken().Value)
 	if p.currentToken().Type != lexer.LBrace {
 		return nil, fmt.Errorf("Expected 'if' keyword")
 	}

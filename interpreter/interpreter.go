@@ -25,8 +25,25 @@ func executeStatement(nodes []*parser.ASTNode, env *Environment) error {
 			if err := executeIfStatement(node, env); err != nil {
 				return err
 			}
+		case parser.NodeBlock:
+			if err := executeBlock(node, env); err != nil {
+				return err
+			}
 		default:
 			return fmt.Errorf("Unknown statement : %v", node.Type)
+		}
+	}
+
+	return nil
+}
+
+func executeBlock(node *parser.ASTNode, parentEnv *Environment) error {
+
+	blockEnv := NewEnvironment(parentEnv)
+
+	for _, stmt := range node.Children {
+		if err := executeStatement([]*parser.ASTNode{stmt}, blockEnv); err != nil {
+			return err
 		}
 	}
 
@@ -76,18 +93,24 @@ func executeForLoop(node *parser.ASTNode, env *Environment) error {
 
 	loopVar := node.Value.(string)
 	rangeNode := node.Children[0]
-	body := node.Children[1]
+	body := node.Children[1] // NodeBlock
+
+	// fmt.Printf("body: %v and its type %v", body, body.Children)
+	// fmt.Printf("body: %T and its type %T", body, body.Children)
+
 	
 	if rangeNode.Type != parser.NodeRange {
 		return fmt.Errorf("expected range")
 	}
 
 	limit := rangeNode.Value.(int)
-	// fmt.Println("limit value ", limit)
+
+	loopEnv := NewEnvironment(env)
 
 	for i := 0; i < limit; i++ {
-		env.Set(loopVar, i)
-		if err := executeStatement(body.Children, env); err != nil {
+		loopEnv.Set(loopVar, i)
+		// fmt.Println("loopvar value: ", loopEnv)
+		if err := executeBlock(body, loopEnv); err != nil {
 			return err
 		}
 	}
@@ -140,7 +163,7 @@ func executeIfStatement(node *parser.ASTNode, env *Environment) error {
 	}
 
 	if result {
-		if err := executeStatement(body.Children, env); err != nil {
+		if err := executeBlock(body, env); err != nil {
 			return fmt.Errorf("Error executing in body: %v", err)
 		}
 	}

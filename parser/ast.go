@@ -18,6 +18,14 @@ const (
 	NodeNumberLiteral NodeType = "NUMBER_LITERAL"
 	NodeIdentifier NodeType = "IDENTIFIER"
 	NodeBinaryOperation NodeType = "BINARY_OPERATION"
+
+	// Operator Node type
+	NodeComparision NodeType = "COMPARISION"
+	NodeGreaterThan NodeType = "GREATERTHAN"
+	NodeLessThan NodeType = "LESSTHAN"
+
+	// Condition node type
+	NodeCondition NodeType = "CONDITION"
 )
 
 type ASTNode struct {

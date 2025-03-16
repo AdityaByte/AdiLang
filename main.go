@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/AdityaByte/AdiLang/interpreter"
 	"github.com/AdityaByte/AdiLang/lexer"
@@ -37,6 +38,11 @@ func main() {
 	}
 
 	filename := os.Args[1]
+
+	if !strings.HasSuffix(filename, ".adi") {
+		fmt.Println("File extension must be .adi")
+		return
+	}
 
 	code, err := os.ReadFile(filename)
 

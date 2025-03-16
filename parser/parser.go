@@ -189,6 +189,13 @@ func (p *Parser) parseOperator() (*ASTNode, error) {
 		}
 		p.nextToken()
 		return node, nil
+	case lexer.NotEqualsOperator:
+		node := &ASTNode{
+			Type: NodeNotEquals,
+			Value: p.currentToken().Value,
+		}
+		p.nextToken()
+		return node, nil
 	default:
 		return nil, fmt.Errorf("Expected these '==, >, <'")
 	}

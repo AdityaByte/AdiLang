@@ -21,8 +21,10 @@ const (
 	AssignOperator TokenType = "ASSIGN"
 	PlusOperator TokenType = "PLUS"
 	MinusOperator TokenType = "MINUS"
-	GreaterThanOperator TokenType = "GREATERTHAN"
 	PrintOperator TokenType = "PRINTOPERATOR" // ->
+	GreaterThanOperator TokenType = "GREATERTHAN" // >
+	LessThanOperator TokenType = "LESSTHAN" // <
+	ComparisionOperator TokenType = "COMPARISION" // ==
 
 	// Brackets
 	LBrace TokenType = "LEFTBRACE"

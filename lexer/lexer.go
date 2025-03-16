@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"strings"
 	"unicode"
 )
@@ -59,6 +58,13 @@ func Lexer(input string) []Token {
 			continue
 		}
 
+		// Handling multicharacters -> ==
+		if char == '=' && i+1 < length && chars[i+1] == '='{
+			tokens = append(tokens, Token{ComparisionOperator, "=="})
+			i += 2
+			continue
+		}
+
 		// Handling single character tokens
 		if isDelimiter(char) {
 			if currentToken.Len() > 0 {
@@ -79,6 +85,8 @@ func Lexer(input string) []Token {
 				tokens = append(tokens, Token{RBrace, "}"})
 			case '>':
 				tokens = append(tokens, Token{GreaterThanOperator, ">"})
+			case '<':
+				tokens = append(tokens, Token{LessThanOperator, "<"})
 			}
 			i++
 			continue
@@ -102,7 +110,7 @@ func Lexer(input string) []Token {
 
 func isDelimiter(char rune) bool {
 	switch char {
-	case '=', '(', ')', '{', '}', '-', '>':
+	case '=', '(', ')', '{', '}', '-', '>', '<': // Added < in this
 		return true
 	default:
 		return false
@@ -119,9 +127,7 @@ func classifyToken(input string) Token {
 		return Token{VarKeyword, input}
 	case "out":
 		return Token{OutKeyword, input}
-	case "if":
-		fmt.Println("I am here dude in the if case.")
-		fmt.Println(input)
+	case "ifdude":
 		return Token{IfKeyword, input}
 	case "else":
 		return Token{ElseKeyword, input}

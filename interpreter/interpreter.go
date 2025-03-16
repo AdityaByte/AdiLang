@@ -72,6 +72,17 @@ func executePrintStatement(node *parser.ASTNode, env *Environment) error {
 	if err != nil {
 		return err
 	}
+
+	if node.Children != nil {
+		anotherValue, err := evaluateExpression(node.Children[0], env)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(value.(string) + anotherValue.(string))
+		return nil
+	}
+
 	fmt.Println(value)
 	return nil
 }

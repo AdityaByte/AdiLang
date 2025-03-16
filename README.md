@@ -19,7 +19,7 @@ A minimalist toy programming language built with ❤️ in Go. Modern syntax mee
 | **🖨️ Print Statements**   | `out->"Hello World!"`                       |
 | **🌀 Loops**               | `fordude i in range(5) { ... }`             |
 | **🤔 conditional**               | `ifdude condition { ... }`             |
-| **🎈 Block Level Design**               | `{var(a=10)} we cannot access a hrer`             |
+| **🎈 Block Level Design**               | `{var(a=10)} we cannot access a here`             |
 
 </div>
 

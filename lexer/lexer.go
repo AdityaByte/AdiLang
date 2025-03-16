@@ -87,6 +87,8 @@ func Lexer(input string) []Token {
 				tokens = append(tokens, Token{GreaterThanOperator, ">"})
 			case '<':
 				tokens = append(tokens, Token{LessThanOperator, "<"})
+			case '+':
+				tokens = append(tokens, Token{PlusOperator, "+"})
 			}
 			i++
 			continue
@@ -110,7 +112,7 @@ func Lexer(input string) []Token {
 
 func isDelimiter(char rune) bool {
 	switch char {
-	case '=', '(', ')', '{', '}', '-', '>', '<': // Added < in this
+	case '=', '(', ')', '{', '}', '-', '>', '<', '+': // Added < in this
 		return true
 	default:
 		return false

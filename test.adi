@@ -1,5 +1,7 @@
-// This is aditya language
+ifdude 10 == 20 {
+    out-> "first block"
+}
 
-var(name="aditya pawar")
-var(name2=name)
-out->name2
+ifdude 1 == 1 {
+    out-> "second block"
+}

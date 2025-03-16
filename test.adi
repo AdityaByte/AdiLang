@@ -1,7 +1,0 @@
-ifdude 10 == 20 {
-    out-> "first block"
-}
-
-ifdude 1 == 1 {
-    out-> "second block"
-}

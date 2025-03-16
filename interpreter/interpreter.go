@@ -21,6 +21,10 @@ func executeStatement(nodes []*parser.ASTNode, env *Environment) error {
 			if err := executeForLoop(node, env); err != nil {
 				return err
 			}
+		case parser.NodeIfStatement:
+			if err := executeIfStatement(node, env); err != nil {
+				return err
+			}
 		default:
 			return fmt.Errorf("Unknown statement : %v", node.Type)
 		}
@@ -87,6 +91,60 @@ func executeForLoop(node *parser.ASTNode, env *Environment) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func executeIfStatement(node *parser.ASTNode, env *Environment) error {
+
+	if len(node.Children) < 2 {
+		return fmt.Errorf("invalid if statement missing conditon and body")
+	}
+
+	cond := node.Children[0]
+	body := node.Children[1]
+
+	left, err := evaluateExpression(cond.Children[0], env)
+
+	if err != nil {
+		return fmt.Errorf("Error evaluating left hand side ", err)
+	}
+
+	right, err := evaluateExpression(cond.Children[1], env)
+
+	if err != nil {
+		return fmt.Errorf("Error evaluating right hand side ", err)
+	}
+
+	operator, ok := cond.Value.(string) // If the thing is ok it return true otherwise false
+
+	if !ok {
+		return fmt.Errorf("Invalid condition operator: %v", operator)
+	}
+
+	var result bool
+
+	// fmt.Println("left value:", left)
+	// fmt.Println("right value:", right)
+	// fmt.Println("Operator value:", operator)
+	// fmt.Printf("%v -> %T and %v -> %T and %v -> %T \n", left, left, right, right, operator, operator)
+
+	switch operator {
+	case "==":
+		result = left == right
+	case ">":
+		result = left.(int) > right.(int)
+	case "<":
+		result = left.(int) < right.(int)
+	default:
+		return fmt.Errorf("Unsupported operator: %v", operator)
+	}
+
+	if result {
+		if err := executeStatement(body.Children, env); err != nil {
+			return fmt.Errorf("Error executing in body: %v", err)
+		}
+	}
+
 	return nil
 }
 

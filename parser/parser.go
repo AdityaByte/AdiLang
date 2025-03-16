@@ -82,7 +82,7 @@ func (p *Parser) parsePrintStatement() (*ASTNode, error) {
 		return nil, err
 	}
 	
-	fmt.Println(p.currentToken().Type, p.currentToken().Value)
+	// fmt.Println(p.currentToken().Type, p.currentToken().Value)
 	if p.currentToken().Type == lexer.PlusOperator {
 		p.nextToken()
 		anotherExpr, err := p.parseExpression()
@@ -374,6 +374,9 @@ func (p *Parser) Parse() []*ASTNode {
 			Nodes = append(Nodes, astNode)
 		case lexer.IfKeyword:
 			astNode, _ := p.parseIfStatement()
+			Nodes = append(Nodes, astNode)
+		case lexer.LBrace:
+			astNode, _ := p.parseBlock()
 			Nodes = append(Nodes, astNode)
 		default:
 			p.nextToken()

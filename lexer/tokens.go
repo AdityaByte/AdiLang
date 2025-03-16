@@ -25,6 +25,7 @@ const (
 	GreaterThanOperator TokenType = "GREATERTHAN" // >
 	LessThanOperator TokenType = "LESSTHAN" // <
 	ComparisionOperator TokenType = "COMPARISION" // ==
+	NotEqualsOperator TokenType = "NOTEQUALS" // !=
 
 	// Brackets
 	LBrace TokenType = "LEFTBRACE"

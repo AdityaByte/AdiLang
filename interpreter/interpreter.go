@@ -170,6 +170,8 @@ func executeIfStatement(node *parser.ASTNode, env *Environment) error {
 		result = left.(int) > right.(int)
 	case "<":
 		result = left.(int) < right.(int)
+	case "!=":
+		result = left != right
 	default:
 		return fmt.Errorf("Unsupported operator: %v", operator)
 	}

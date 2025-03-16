@@ -65,6 +65,13 @@ func Lexer(input string) []Token {
 			continue
 		}
 
+		// Handling multicharacters -> !=
+		if char == '!' && i+1 < length && chars[i+1] == '=' {
+			tokens = append(tokens, Token{NotEqualsOperator, "!="})
+			i += 2
+			continue
+		}
+
 		// Handling single character tokens
 		if isDelimiter(char) {
 			if currentToken.Len() > 0 {

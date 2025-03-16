@@ -23,6 +23,7 @@ const (
 	NodeComparision NodeType = "COMPARISION"
 	NodeGreaterThan NodeType = "GREATERTHAN"
 	NodeLessThan NodeType = "LESSTHAN"
+	NodeNotEquals NodeType = "NOTEQUALS"
 
 	// Condition node type
 	NodeCondition NodeType = "CONDITION"

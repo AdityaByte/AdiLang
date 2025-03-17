@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/AdityaByte/AdiLang/parser"
 )
@@ -80,11 +81,11 @@ func executePrintStatement(node *parser.ASTNode, env *Environment) error {
 			return err
 		}
 
-		fmt.Println(value.(string) + anotherValue.(string))
+		log.Println(value.(string) + anotherValue.(string))
 		return nil
 	}
 
-	fmt.Println(value)
+	log.Println(value)
 	return nil
 }
 
@@ -110,7 +111,6 @@ func executeForLoop(node *parser.ASTNode, env *Environment) error {
 	// fmt.Printf("body: %v and its type %v", body, body.Children)
 	// fmt.Printf("body: %T and its type %T", body, body.Children)
 
-	
 	if rangeNode.Type != parser.NodeRange {
 		return fmt.Errorf("expected range")
 	}

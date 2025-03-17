@@ -364,45 +364,65 @@ func (p *Parser) parseIdentifier() (*ASTNode, error) {
 
 // Main function which parse out the things.
 func (p *Parser) Parse() ([]*ASTNode, error) {
-	var Nodes []*ASTNode
+	var nodes []*ASTNode
+
+	parser := map[lexer.TokenType]func() (*ASTNode, error) {
+		lexer.OutKeyword: p.parsePrintStatement,
+		lexer.VarKeyword: p.parseVariableDeclaration,
+		lexer.ForDudeKeyword: p.parseForLoop,
+		lexer.IfKeyword: p.parseIfStatement,
+		lexer.LBrace: p.parseBlock,
+	}
 
 	for p.Pos < len(p.Tokens) {
 		token := p.currentToken()
 
-		switch token.Type {
-		case lexer.OutKeyword:
-			astNode, err := p.parsePrintStatement()
+		if parser, exists := parser[token.Type]; exists {
+			astNode, err := parser()
 			if err != nil {
 				return nil, err
 			}
-			Nodes = append(Nodes, astNode)
-		case lexer.VarKeyword:
-			astNode, err := p.parseVariableDeclaration()
-			if err != nil {
-				return nil, err
-			}
-			Nodes = append(Nodes, astNode)
-		case lexer.ForDudeKeyword:
-			astNode, err := p.parseForLoop()
-			if err != nil {
-				return nil, err
-			}
-			Nodes = append(Nodes, astNode)
-		case lexer.IfKeyword:
-			astNode, err := p.parseIfStatement()
-			if err != nil {
-				return nil, err
-			}
-			Nodes = append(Nodes, astNode)
-		case lexer.LBrace:
-			astNode, err := p.parseBlock()
-			if err != nil {
-				return nil, err
-			}
-			Nodes = append(Nodes, astNode)
-		default:
+			nodes = append(nodes, astNode)
+		} else {
 			p.nextToken()
 		}
 	}
-	return Nodes, nil
+		return nodes,nil
+
+	// 	switch token.Type {
+	// 	case lexer.OutKeyword:
+	// 		astNode, err := p.parsePrintStatement()
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+	// 		Nodes = append(Nodes, astNode)
+	// 	case lexer.VarKeyword:
+	// 		astNode, err := p.parseVariableDeclaration()
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+	// 		Nodes = append(Nodes, astNode)
+	// 	case lexer.ForDudeKeyword:
+	// 		astNode, err := p.parseForLoop()
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+	// 		Nodes = append(Nodes, astNode)
+	// 	case lexer.IfKeyword:
+	// 		astNode, err := p.parseIfStatement()
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+	// 		Nodes = append(Nodes, astNode)
+	// 	case lexer.LBrace:
+	// 		astNode, err := p.parseBlock()
+	// 		if err != nil {
+	// 			return nil, err
+	// 		}
+	// 		Nodes = append(Nodes, astNode)
+	// 	default:
+	// 		p.nextToken()
+	// 	}
+	// }
+	// return Nodes, nil
 }

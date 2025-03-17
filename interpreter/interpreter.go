@@ -2,7 +2,6 @@ package interpreter
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/AdityaByte/AdiLang/parser"
 )
@@ -81,11 +80,11 @@ func executePrintStatement(node *parser.ASTNode, env *Environment) error {
 			return err
 		}
 
-		log.Println(value.(string) + anotherValue.(string))
+		fmt.Println(value.(string) + anotherValue.(string))
 		return nil
 	}
 
-	log.Println(value)
+	fmt.Println(value)
 	return nil
 }
 

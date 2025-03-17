@@ -67,13 +67,7 @@ func main() {
 		return
 	}
 
-	// for _, astNode := range astNodes {
-	// 	fmt.Println("%v", astNode)
-	// }
-
 	// printAST(astNodes, "")
-
-	// fmt.Println("**********************************")
 
 	// Creating a new Environment
 	env := interpreter.NewEnvironment(nil)

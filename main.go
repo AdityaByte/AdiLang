@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -33,21 +34,21 @@ func printAST(nodes []*parser.ASTNode, indent string) {
 func main() {
 
 	if len(os.Args) < 2 {
-		fmt.Println("Usage adilang <filename>.adi")
+		log.Println("Usage adilang <filename>.adi")
 		return
 	}
 
 	filename := os.Args[1]
 
 	if !strings.HasSuffix(filename, ".adi") {
-		fmt.Println("File extension must be .adi")
+		log.Println("File extension must be .adi")
 		return
 	}
 
 	code, err := os.ReadFile(filename)
 
 	if err != nil {
-		fmt.Println("Error occured", err)
+		log.Fatal("Error Reading file", err)
 		return
 	}
 
@@ -59,7 +60,12 @@ func main() {
 
 	parser := parser.Parser{Tokens: tokens, Pos: 0}
 
-	astNodes := parser.Parse()
+	astNodes, err := parser.Parse()
+
+	if err != nil {
+		log.Fatal("Error:", err)
+		return
+	}
 
 	// for _, astNode := range astNodes {
 	// 	fmt.Println("%v", astNode)
@@ -73,6 +79,6 @@ func main() {
 	env := interpreter.NewEnvironment(nil)
 
 	if err := interpreter.Interpret(astNodes, env); err != nil {
-		fmt.Println("Error:", err)
+		log.Fatal("Error:", err)
 	}
 }

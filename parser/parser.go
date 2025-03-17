@@ -363,7 +363,7 @@ func (p *Parser) parseIdentifier() (*ASTNode, error) {
 }
 
 // Main function which parse out the things.
-func (p *Parser) Parse() []*ASTNode {
+func (p *Parser) Parse() ([]*ASTNode, error) {
 	var Nodes []*ASTNode
 
 	for p.Pos < len(p.Tokens) {
@@ -371,23 +371,38 @@ func (p *Parser) Parse() []*ASTNode {
 
 		switch token.Type {
 		case lexer.OutKeyword:
-			astNode, _ := p.parsePrintStatement()
+			astNode, err := p.parsePrintStatement()
+			if err != nil {
+				return nil, err
+			}
 			Nodes = append(Nodes, astNode)
 		case lexer.VarKeyword:
-			astNode, _ := p.parseVariableDeclaration()
+			astNode, err := p.parseVariableDeclaration()
+			if err != nil {
+				return nil, err
+			}
 			Nodes = append(Nodes, astNode)
 		case lexer.ForDudeKeyword:
-			astNode, _ := p.parseForLoop()
+			astNode, err := p.parseForLoop()
+			if err != nil {
+				return nil, err
+			}
 			Nodes = append(Nodes, astNode)
 		case lexer.IfKeyword:
-			astNode, _ := p.parseIfStatement()
+			astNode, err := p.parseIfStatement()
+			if err != nil {
+				return nil, err
+			}
 			Nodes = append(Nodes, astNode)
 		case lexer.LBrace:
-			astNode, _ := p.parseBlock()
+			astNode, err := p.parseBlock()
+			if err != nil {
+				return nil, err
+			}
 			Nodes = append(Nodes, astNode)
 		default:
 			p.nextToken()
 		}
 	}
-	return Nodes
+	return Nodes, nil
 }

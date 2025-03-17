@@ -30,7 +30,6 @@ func (e *Environment) Get(name string) (interface{}, error) {
 	}
 
 	if !exists {
-		fmt.Printf("Variable is not defined in the scope %s", name)
 		return nil, fmt.Errorf("undefined variable: %s",name)
 	}
 

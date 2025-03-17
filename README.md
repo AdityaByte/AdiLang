@@ -7,6 +7,9 @@ A minimalist toy programming language built with ❤️ in Go. Modern syntax mee
 
 ---
 
+## 🚀 Flowchart
+# <img src="flowchart.png" alt="AdiLang Logo" /> AdiLang
+
 ## 🚀 Features
 
 <div align="center">
